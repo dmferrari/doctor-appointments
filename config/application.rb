@@ -30,5 +30,20 @@ module ClinicChallenge
     config.api_only = true
 
     config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.generators do |g|
+      g.helper false
+      g.javascripts false
+      g.jbuilder false
+      g.stylesheets false
+      g.test_framework :rspec,
+                       controller_specs: true,
+                       fixtures: true,
+                       helper_specs: false,
+                       model_specs: true,
+                       request_specs: false,
+                       routing_specs: false,
+                       view_specs: false
+    end
   end
 end
