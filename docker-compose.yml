@@ -21,7 +21,7 @@ services:
       - db
       - redis
     environment:
-      - REDIS_URL_SIDEKIQ=${REDIS_URL_SIDEKIQ}
+      - REDIS_URL=${REDIS_URL}
 
   redis:
     image: redis
@@ -42,7 +42,7 @@ services:
     volumes:
       - ".:/web"
     environment:
-      - REDIS_URL_SIDEKIQ=${REDIS_URL_SIDEKIQ}
+      - REDIS_URL=${REDIS_URL}
 
 volumes:
   redis:
