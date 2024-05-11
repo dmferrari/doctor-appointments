@@ -1,5 +1,16 @@
+# config/routes.rb
+
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
+  # Secure Sidekiq web dashboard in production. Otherwise, keep it open
+  if Rails.env.production?
+    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      ActiveSupport::SecurityUtils.secure_compare(username, ENV.fetch('SIDEKIQ_USERNAME', nil)) &
+        ActiveSupport::SecurityUtils.secure_compare(password, ENV.fetch('SIDEKIQ_PASSWORD', nil))
+    end
+  end
 
   devise_for :users, skip: %i[sessions registrations]
 
