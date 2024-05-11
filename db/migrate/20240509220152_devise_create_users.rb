@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DeviseCreateUsers < ActiveRecord::Migration[7.1]
-  def change
+  def change # rubocop:disable Metrics/MethodLength
     create_table :users do |t|
       t.string :full_name, null: false, default: ''
       t.string :email, null: false, default: ''

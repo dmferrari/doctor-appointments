@@ -1,4 +1,4 @@
-# config/routes.rb
+# frozen_string_literal: true
 
 Rails.application.routes.draw do
   require 'sidekiq/web'
