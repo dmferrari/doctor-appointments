@@ -10,10 +10,13 @@ gem 'bootsnap', require: false
 gem 'bundler', '~> 2.5.7'
 gem 'cancancan'
 gem 'devise'
+gem 'devise-jwt'
 gem 'pg'
 gem 'puma'
 gem 'redis'
+gem 'rolify'
 gem 'sidekiq'
+gem 'sidekiq-scheduler'
 
 group :development, :test do
   gem 'byebug'
@@ -26,6 +29,7 @@ end
 
 group :development do
   gem 'bullet'
+  gem 'letter_opener'
   gem 'rack-mini-profiler'
   gem 'rails-perftest'
   gem 'reek'
