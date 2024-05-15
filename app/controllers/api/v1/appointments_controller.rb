@@ -39,7 +39,11 @@ module Api
       end
 
       def update
-        render json: { message: "Appointment #{params[:id]} updated" }, status: :ok
+        if @appointment.update(appointment_params)
+          render json: { appointment: @appointment, message: "Appointment #{params[:id]} updated" }, status: :ok
+        else
+          render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
+        end
       end
 
       def destroy
