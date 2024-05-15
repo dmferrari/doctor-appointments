@@ -19,7 +19,11 @@ module Api
       end
 
       def show
-        render json: { message: 'Appointment details' }, status: :ok
+        if @appointment
+          render json: { appointment: @appointment }, status: :ok
+        else
+          render json: { error: 'Appointment not found' }, status: :not_found
+        end
       end
 
       def create
