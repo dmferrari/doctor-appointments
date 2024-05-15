@@ -8,13 +8,9 @@ module Api
       before_action :set_appointment, only: %i[show update destroy]
 
       def index
-        if current_user.has_role?(:doctor)
-          render json: { appointments: current_user.doctor_appointments }, status: :ok
-        elsif current_user.has_role?(:patient)
-          render json: { appointments: current_user.patient_appointments }, status: :ok
-        else
-          render json: { error: 'Unauthorized' }, status: :unauthorized
-        end
+        render json: {
+          appointments: current_user.doctor_appointments + current_user.patient_appointments
+        }, status: :ok
       end
 
       def show
