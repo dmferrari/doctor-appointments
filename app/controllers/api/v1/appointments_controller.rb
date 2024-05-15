@@ -30,7 +30,7 @@ module Api
         end
 
         if appointment.save
-          render json: { appointment:, message: "Appointment #{appointment.id} created" }, status: :created
+          render json: { appointment:, message: 'Appointment created' }, status: :created
         else
           render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
         end
@@ -38,7 +38,7 @@ module Api
 
       def update
         if @appointment.update(appointment_params)
-          render json: { appointment: @appointment, message: "Appointment #{params[:id]} updated" }, status: :ok
+          render json: { appointment: @appointment, message: 'Appointment updated' }, status: :ok
         else
           render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
         end
