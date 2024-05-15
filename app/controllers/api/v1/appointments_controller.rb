@@ -57,7 +57,13 @@ module Api
       private
 
       def set_appointment
-        # @appointment = Appointment.find(params[:id])
+        if current_user.has_role?(:doctor)
+          @appointment = Appointment.find_by(id: params[:id], doctor: current_user)
+        elsif current_user.has_role?(:patient)
+          @appointment = Appointment.find_by(id: params[:id], patient: current_user)
+        else
+          render json: { error: 'Unauthorized' }, status: :unauthorized
+        end
       end
 
       def set_doctor
