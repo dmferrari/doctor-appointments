@@ -17,4 +17,12 @@ class User < ApplicationRecord
   has_many :patient_appointments, class_name: 'Appointment', foreign_key: 'patient_id', inverse_of: :patient,
                                   dependent: :destroy
 
+
+  def doctor?
+    has_role?(:doctor)
+  end
+
+  def patient?
+    has_role?(:patient)
+  end
 end
