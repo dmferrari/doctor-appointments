@@ -27,8 +27,8 @@ module Api
       end
 
       def create
-        appointment = Appointment.new(appointment_params).tap do |a|
-          a.patient = @patient
+        appointment = Appointment.new(appointment_params).tap do |appt|
+          appt.patient = @patient
         end
 
         if appointment.save
