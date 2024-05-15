@@ -14,6 +14,11 @@ Rails.application.routes.draw do
 
   devise_for :users, skip: %i[sessions registrations]
 
+  devise_scope :user do
+    post 'api/v1/users/login', to: 'api/v1/users/sessions#create', as: :user_login
+    delete 'api/v1/users/logout', to: 'api/v1/users/sessions#destroy', as: :user_logout
+  end
+
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   namespace :api do
