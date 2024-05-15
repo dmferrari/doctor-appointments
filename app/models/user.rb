@@ -12,9 +12,14 @@ class User < ApplicationRecord
 
   has_many :working_hours, inverse_of: :doctor, dependent: :destroy
 
-  has_many :doctor_appointments, class_name: 'Appointment', foreign_key: 'doctor_id', inverse_of: :doctor,
+  has_many :doctor_appointments, class_name: 'Appointment',
+                                 foreign_key: 'doctor_id',
+                                 inverse_of: :doctor,
                                  dependent: :destroy
-  has_many :patient_appointments, class_name: 'Appointment', foreign_key: 'patient_id', inverse_of: :patient,
+
+  has_many :patient_appointments, class_name: 'Appointment',
+                                  foreign_key: 'patient_id',
+                                  inverse_of: :patient,
                                   dependent: :destroy
 
   include Doctorable # if respond_to?(:doctor?)
