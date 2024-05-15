@@ -3,7 +3,6 @@
 module Api
   module V1
     class AppointmentsController < Api::V1::BaseController
-      # before_action :authenticate_user!
       before_action :set_patient
       before_action :set_doctor
       before_action :ensure_user_role, only: %i[index show create update destroy]
