@@ -20,8 +20,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :doctors, only: [] do
         member do
-          get 'availability'
-          get 'working_hours'
+          get 'availability(/:date)', to: 'doctors#availability', as: 'availability'
+          get 'working_hours(/:date)', to: 'doctors#working_hours', as: 'working_hours'
         end
       end
 
