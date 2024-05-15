@@ -3,7 +3,6 @@
 module Api
   module V1
     class AppointmentsController < Api::V1::BaseController
-      # before_action :set_patient,
       # before_action :set_doctor
       before_action :ensure_user_role, only: %i[index show create update destroy]
       before_action :set_appointment, only: %i[show update destroy]
@@ -28,7 +27,6 @@ module Api
 
       def create
         appointment = Appointment.new(appointment_params).tap do |appt|
-          appt.patient = @patient
         end
 
         if appointment.save
@@ -78,10 +76,6 @@ module Api
         return unless @patient.nil?
 
         render json: { error: 'Patient not found' }, status: :not_found
-      end
-
-      def current_user
-        @current_user ||= User.patients.last
       end
 
       def appointment_params
