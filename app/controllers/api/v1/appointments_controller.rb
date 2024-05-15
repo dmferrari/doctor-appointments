@@ -47,7 +47,11 @@ module Api
       end
 
       def destroy
-        render json: { message: 'Appointment deleted' }, status: :ok
+        if @appointment.destroy
+          render json: { message: "Appointment #{params[:id]} deleted" }, status: :ok
+        else
+          render json: { error: 'Failed to delete appointment' }, status: :unprocessable_entity
+        end
       end
 
       private
