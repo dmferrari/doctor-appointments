@@ -10,9 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_11_210336) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_14_101527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "appointments", force: :cascade do |t|
+    t.bigint "doctor_id", null: false
+    t.bigint "patient_id", null: false
+    t.datetime "appointment_date", null: false
+    t.string "start_time", null: false
+    t.string "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["appointment_date"], name: "index_appointments_on_appointment_date"
+    t.index ["doctor_id", "patient_id", "appointment_date"], name: "idx_on_doctor_id_patient_id_appointment_date_52b0e581f8", unique: true
+    t.index ["doctor_id"], name: "index_appointments_on_doctor_id"
+    t.index ["patient_id"], name: "index_appointments_on_patient_id"
+  end
+
+  create_table "doctor_profiles", force: :cascade do |t|
+    t.bigint "doctor_id", null: false
+    t.integer "session_length", null: false
+    t.string "specialty"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_id"], name: "index_doctor_profiles_on_doctor_id"
+    t.index ["specialty"], name: "index_doctor_profiles_on_specialty"
+  end
 
   create_table "jwt_denylists", force: :cascade do |t|
     t.string "jti"
@@ -53,4 +77,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_11_210336) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "working_hours", force: :cascade do |t|
+    t.bigint "doctor_id", null: false
+    t.date "working_date", null: false
+    t.string "start_time", null: false
+    t.string "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_id", "working_date"], name: "index_working_hours_on_doctor_id_and_working_date", unique: true
+    t.index ["doctor_id"], name: "index_working_hours_on_doctor_id"
+  end
+
+  add_foreign_key "appointments", "users", column: "doctor_id"
+  add_foreign_key "appointments", "users", column: "patient_id"
+  add_foreign_key "doctor_profiles", "users", column: "doctor_id"
+  add_foreign_key "working_hours", "users", column: "doctor_id"
 end
