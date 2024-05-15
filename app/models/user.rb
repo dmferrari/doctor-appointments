@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :patient_appointments, class_name: 'Appointment', foreign_key: 'patient_id', inverse_of: :patient,
                                   dependent: :destroy
 
+  include Doctorable # if respond_to?(:doctor?)
 
   def doctor?
     has_role?(:doctor)
