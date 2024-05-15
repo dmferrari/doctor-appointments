@@ -27,6 +27,7 @@ module Api
 
       def create
         appointment = Appointment.new(appointment_params).tap do |appt|
+          appt.patient = current_user
         end
 
         if appointment.save
