@@ -32,7 +32,7 @@ class Appointment < ApplicationRecord
   private
 
   def set_end_time
-    self.end_time = parsed_end_time.strftime('%H:%M')
+    self.end_time = formatted_end_time
   end
 
   def validate_doctor_role
@@ -44,7 +44,7 @@ class Appointment < ApplicationRecord
   end
 
   def validate_start_time
-    errors.add(:start_time, 'is not a valid time') if parsed_start_time.nil?
+    errors.add(:start_time, 'is not a valid time') unless start_time_to_string
   end
 
   def validate_appointment_date_cannot_be_in_the_past
@@ -69,16 +69,16 @@ class Appointment < ApplicationRecord
     errors.add(:appointment, 'slot is not available') unless slot_available
   end
 
-  def parsed_start_time
-    @parsed_start_time ||= parse_time(start_time)
+  def start_time_to_string
+    @start_time_to_string ||= string_to_time(start_time)
   end
 
-  def parsed_end_time
-    @parsed_end_time ||= parsed_start_time + session_length_in_minutes
+  def end_time_to_string
+    @end_time_to_string ||= start_time_to_string + session_length_in_minutes
   end
 
   def formatted_end_time
-    @formatted_end_time ||= parsed_end_time.strftime('%H:%M')
+    @formatted_end_time ||= end_time_to_string.strftime('%H:%M')
   end
 
   def session_length_in_minutes
