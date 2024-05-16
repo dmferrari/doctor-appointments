@@ -6,6 +6,8 @@
 DEFAULT_PASSWORD = 'password'
 
 APPOINTMENT_START_TIMES = %w[08:00 09:00 10:00 11:00 12:00 13:00 14:00 15:00].freeze
+SESSION_START_TIMES = %w[08:00 09:00 10:00].freeze
+SESSION_END_TIMES = %w[16:00 17:00 18:00 19:00 20:00].freeze
 SESSION_LENGTHS = [15, 30, 45, 60].freeze
 
 DOCTOR_SPECIALTIES = %w[
@@ -38,6 +40,8 @@ def define_working_hours(doctor)
       working_date: Time.zone.today + i.days,
       start_time: '08:00',
       end_time: '16:00'
+      start_time: SESSION_START_TIMES.sample,
+      end_time: SESSION_END_TIMES.sample
     )
   end
 end
