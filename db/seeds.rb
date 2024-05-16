@@ -65,7 +65,7 @@ end
   doctor = User.with_role(:doctor).sample
   patient = User.with_role(:patient).sample
 
-  Appointment.create!(
+  Appointment.create(
     doctor:,
     patient:,
     appointment_date: doctor.working_hours.sample.working_date,
