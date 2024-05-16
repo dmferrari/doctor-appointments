@@ -3,6 +3,8 @@
 module Api
   module V1
     class DoctorsController < Api::V1::BaseController
+      include DateTimeParser
+
       before_action :ensure_doctor_role, only: %i[availability working_hours]
       before_action :set_doctor, only: %i[availability working_hours]
       before_action :set_requested_date, only: %i[availability working_hours]
@@ -21,31 +23,24 @@ module Api
         @doctor = User.doctors.find_by(id: params[:id])
         return unless @doctor.nil?
 
-        render json: { error: 'Doctor not found' }, status: :not_found
+        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) }, status: :not_found
       end
 
       def ensure_doctor_role
         return if current_user.has_role?(:doctor)
 
-        render json: { error: 'Unauthorized' }, status: :unauthorized
+        render json: { error: I18n.t('errors.messages.unauthorized') }, status: :unauthorized
       end
 
       def set_requested_date
         if params[:date].present?
-          @requested_date = parse_date(params[:date])
+          @requested_date = string_to_date(params[:date])
           return unless @requested_date.nil?
 
-          render json: { error: 'Invalid date format' }, status: :unprocessable_entity
+          render json: { error: I18n.t('errors.messages.invalid_date_format') }, status: :unprocessable_entity
         else
           @requested_date = nil
         end
-      end
-
-      def parse_date(date_str)
-        Date.parse(date_str)
-      rescue ArgumentError
-        Rails.logger.info("[#{self.class.name}] Invalid date format: #{date_str}")
-        nil
       end
     end
   end

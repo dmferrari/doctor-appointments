@@ -16,7 +16,8 @@ module Api
         if @appointment
           render json: { appointment: @appointment }, status: :ok
         else
-          render json: { error: 'Appointment not found' }, status: :not_found
+          render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('appointment')) },
+                 status: :not_found
         end
       end
 
@@ -26,7 +27,7 @@ module Api
         end
 
         if appointment.save
-          render json: { appointment:, message: 'Appointment created' }, status: :created
+          render json: { appointment: }, status: :created
         else
           render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
         end
@@ -34,7 +35,7 @@ module Api
 
       def update
         if @appointment.update(appointment_params)
-          render json: { appointment: @appointment, message: 'Appointment updated' }, status: :ok
+          render json: { appointment: @appointment }, status: :ok
         else
           render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
         end
@@ -42,9 +43,9 @@ module Api
 
       def destroy
         if @appointment.destroy
-          render json: { message: "Appointment #{params[:id]} deleted" }, status: :ok
+          render json: {}, status: :ok
         else
-          render json: { error: 'Failed to delete appointment' }, status: :unprocessable_entity
+          render json: { error: I18n.t('errors.messages.deletion_failed') }, status: :unprocessable_entity
         end
       end
 
@@ -56,21 +57,21 @@ module Api
         elsif current_user.has_role?(:doctor)
           @appointment = Appointment.find_by!(id: params[:id], doctor: current_user)
         else
-          render json: { error: 'Unauthorized' }, status: :unauthorized
+          render json: { error: I18n.t('errors.messages.unauthorized') }, status: :unauthorized
         end
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Appointment not found' }, status: :not_found
+        render json: { error: I18n.t('errors.messages.not_found') }, status: :not_found
       end
 
       def appointment_params
-        params.require(:appointment).permit(:doctor_id, :appointment_date, :start_time)
+        params.require(:appointment).permit(:doctor_id, :date, :appointment_date, :start_time)
       end
 
       def set_doctor
         @doctor = User.doctors.find_by(id: appointment_params[:doctor_id])
         return unless @doctor.nil?
 
-        render json: { error: 'Doctor not found' }, status: :not_found
+        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) }, status: :not_found
       end
     end
   end
