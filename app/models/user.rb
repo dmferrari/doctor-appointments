@@ -22,6 +22,6 @@ class User < ApplicationRecord
                                   inverse_of: :patient,
                                   dependent: :destroy
 
-  include Doctorable # if respond_to?(:doctor?)
+  include Doctorable
 
 end
