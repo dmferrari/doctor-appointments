@@ -20,6 +20,7 @@ class Appointment < ApplicationRecord
   validate :validate_start_time, unless: -> { errors[:start_time].any? }
   validate :validate_doctor_role
   validate :validate_patient_role
+  validate :patient_and_doctor_cannot_be_the_same
   validate :validate_appointment_date_cannot_be_in_the_past, unless: -> { errors[:appointment_date].any? }
   validates :appointment_date, uniqueness: {
     scope: %i[doctor_id patient_id appointment_date],
@@ -41,6 +42,10 @@ class Appointment < ApplicationRecord
 
   def validate_patient_role
     errors.add(:patient, 'must have the patient role') unless patient&.has_role?(:patient)
+  end
+
+  def patient_and_doctor_cannot_be_the_same
+    errors.add(:patient, 'and doctor cannot be the same') if doctor.id == patient.id
   end
 
   def validate_start_time
