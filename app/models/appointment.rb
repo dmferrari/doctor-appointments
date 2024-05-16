@@ -53,15 +53,11 @@ class Appointment < ApplicationRecord
   end
 
   def validate_appointment_date_cannot_be_in_the_past
-    return if appointment_date >= Date.current
-
-    errors.add(:appointment_date, 'cannot be in the past')
+    errors.add(:appointment_date, 'cannot be in the past') if appointment_date < Date.current
   end
 
   def validate_appointment_within_doctor_working_hours
-    return if within_working_hours?
-
-    errors.add(:appointment, 'is not within doctor working hours')
+    errors.add(:appointment, 'is not within doctor working hours') unless within_working_hours?
   end
 
   def within_working_hours?
@@ -70,7 +66,6 @@ class Appointment < ApplicationRecord
 
   def available_slot?
     slot_available = DoctorAvailabilityService.new(doctor:, date: appointment_date).available_at?(start_time:)
-
     errors.add(:appointment, 'slot is not available') unless slot_available
   end
 
