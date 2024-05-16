@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Appointment < ApplicationRecord
-  include TimeParser
+  include DateTimeParser
 
   belongs_to :doctor, -> { with_role(:doctor) },
              class_name: 'User',
@@ -16,19 +16,28 @@ class Appointment < ApplicationRecord
   before_save :set_end_time, if: -> { start_time.present? }
 
   validates :appointment_date, :start_time, presence: true
-  validates :start_time, format: { with: /\A\d{2}:\d{2}\z/, message: 'format must be HH:MM' }
-  validate :validate_start_time, unless: -> { errors[:start_time].any? }
-  validate :validate_doctor_role
-  validate :validate_patient_role
+  validates :start_time, format: { with: /\A\d{2}:\d{2}\z/, message: I18n.t('errors.messages.invalid_time_format') }
+  validates_with DoctorRoleValidator
+  validates_with PatientRoleValidator
+  validates_with AppointmentSlotValidator, unless: -> { errors[:appointment_date].any? || errors[:start_time].any? }
+  validates_with AppointmentDateValidator, unless: -> { errors[:appointment_date].any? }
+  validates_with WorkingHoursValidator, unless: -> { errors[:appointment_date].any? || errors[:doctor].any? }
   validate :patient_and_doctor_cannot_be_the_same
-  validate :validate_appointment_date_cannot_be_in_the_past, unless: -> { errors[:appointment_date].any? }
+
   validates :appointment_date, uniqueness: {
     scope: %i[doctor_id patient_id appointment_date],
-    message: 'has already been taken for this doctor and patient on this date'
+    message: I18n.t('errors.messages.taken_for_doctor_patient_date')
   }
-  validate :validate_appointment_within_doctor_working_hours,
-           unless: -> { errors[:appointment_date].any? || errors[:doctor].any? }
-  validate :available_slot?
+
+  def available_slot?
+    @available_slot ||= DoctorAvailabilityService.new(doctor:, date: appointment_date).available_at?(start_time:)
+  end
+
+  def within_working_hours?
+    DoctorAvailabilityService.new(doctor:, date: appointment_date).appointment_within_working_hours?(
+      start_time: start_time_to_string, end_time: end_time_to_string
+    )
+  end
 
   private
 
@@ -36,37 +45,8 @@ class Appointment < ApplicationRecord
     self.end_time = formatted_end_time
   end
 
-  def validate_doctor_role
-    errors.add(:doctor, 'must have the doctor role') unless doctor&.has_role?(:doctor)
-  end
-
-  def validate_patient_role
-    errors.add(:patient, 'must have the patient role') unless patient&.has_role?(:patient)
-  end
-
   def patient_and_doctor_cannot_be_the_same
-    errors.add(:patient, 'and doctor cannot be the same') if doctor.id == patient.id
-  end
-
-  def validate_start_time
-    errors.add(:start_time, 'is not a valid time') unless start_time_to_string
-  end
-
-  def validate_appointment_date_cannot_be_in_the_past
-    errors.add(:appointment_date, 'cannot be in the past') if appointment_date < Date.current
-  end
-
-  def validate_appointment_within_doctor_working_hours
-    errors.add(:appointment, 'is not within doctor working hours') unless within_working_hours?
-  end
-
-  def within_working_hours?
-    start_time >= working_hours.start_time && formatted_end_time <= working_hours.end_time
-  end
-
-  def available_slot?
-    slot_available = DoctorAvailabilityService.new(doctor:, date: appointment_date).available_at?(start_time:)
-    errors.add(:appointment, 'slot is not available') unless slot_available
+    errors.add(I18n.t('errors.messages.same_patient_and_doctor')) if doctor.id == patient.id
   end
 
   def start_time_to_string
@@ -78,14 +58,10 @@ class Appointment < ApplicationRecord
   end
 
   def formatted_end_time
-    @formatted_end_time ||= end_time_to_string.strftime('%H:%M')
+    @formatted_end_time ||= end_time_to_string.strftime(I18n.t('time_format'))
   end
 
   def session_length_in_minutes
     @session_length_in_minutes ||= doctor.doctor_profile.session_length.minutes
-  end
-
-  def working_hours
-    @working_hours ||= DoctorAvailabilityService.new(doctor:, date: appointment_date).working_hours.first
   end
 end
