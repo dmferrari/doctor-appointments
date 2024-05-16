@@ -10,7 +10,6 @@ class CreateDoctorProfiles < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    # add_index :doctor_profiles, :doctor_id, unique: true
     add_index :doctor_profiles, :specialty
   end
 end
