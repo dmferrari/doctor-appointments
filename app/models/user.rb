@@ -24,11 +24,4 @@ class User < ApplicationRecord
 
   include Doctorable # if respond_to?(:doctor?)
 
-  def doctor?
-    has_role?(:doctor)
-  end
-
-  def patient?
-    has_role?(:patient)
-  end
 end
