@@ -10,10 +10,6 @@ class WorkingHour < ApplicationRecord
   validates :working_date, :start_time, :end_time, presence: true
   validate :start_time_before_end_time
 
-  def includes_hour?(hour_str)
-    start_time <= hour_str && hour_str <= end_time
-  end
-
   private
 
   def doctor_role
