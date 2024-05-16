@@ -44,7 +44,6 @@ class DoctorAvailabilityService
 
   def calculate_availability(date)
     normalized_date = normalize_date(date)
-
     if normalized_date.is_a?(Range)
       normalized_date.flat_map { |d| availability_on_date(d) }
     else
@@ -57,7 +56,6 @@ class DoctorAvailabilityService
     return [] unless working_hours
 
     appointments = Appointment.where(doctor_id: @doctor.id, appointment_date: date).order(:start_time)
-
     calculate_free_intervals(date, working_hours, appointments)
   end
 
