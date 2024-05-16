@@ -76,16 +76,32 @@ class DoctorAvailabilityService
     # Add the free interval before and between each appointment
     appointments.each do |appointment|
       if current_time < appointment.start_time
-        free_intervals << { date:, start_time: current_time, end_time: appointment.start_time }
+        interval = build_interval(date:, start_time: current_time, end_time: appointment.start_time)
+        free_intervals << interval if interval_fits_session_length?(interval)
       end
       current_time = appointment.end_time if current_time < appointment.end_time
     end
 
     # Add the last free interval if available
     if current_time < working_hours.end_time
-      free_intervals << { date:, start_time: current_time, end_time: working_hours.end_time }
+      interval = build_interval(date:, start_time: current_time, end_time: working_hours.end_time)
+      free_intervals << interval if interval_fits_session_length?(interval)
     end
 
     free_intervals
+  end
+
+  def build_interval(date:, start_time:, end_time:)
+    { date:, start_time:, end_time: }
+  end
+
+  # Checks if the interval fits the session length of the doctor.
+  #
+  # @param interval [Hash] The interval to check.
+  # @return [Boolean] True if the interval fits the session length, false
+  #   otherwise.
+  def interval_fits_session_length?(interval)
+    interval_in_minutes = ((string_to_time(interval[:end_time]) - string_to_time(interval[:start_time])) / 60).minutes
+    interval_in_minutes >= doctor.doctor_profile.session_length.minutes
   end
 end
