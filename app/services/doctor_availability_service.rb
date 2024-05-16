@@ -19,9 +19,10 @@ class DoctorAvailabilityService
   end
 
   def available_at?(start_time:)
-    end_time = parse_time(start_time) + doctor.doctor_profile.session_length.minutes
+    end_time = string_to_time(start_time) + doctor.doctor_profile.session_length.minutes
     availability.any? do |slot|
-      parse_time(slot[:start_time]) <= parse_time(start_time) && end_time <= parse_time(slot[:end_time])
+      string_to_time(slot[:start_time]) <= string_to_time(start_time) &&
+        end_time <= string_to_time(slot[:end_time])
     end
   end
 
