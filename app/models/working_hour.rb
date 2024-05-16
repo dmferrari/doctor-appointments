@@ -13,7 +13,7 @@ class WorkingHour < ApplicationRecord
   private
 
   def doctor_role
-    errors.add(:doctor, 'must have the doctor role') unless doctor&.doctor?
+    errors.add(:doctor, 'must have the doctor role') unless doctor.has_role?(:doctor)
   end
 
   def start_time_before_end_time
