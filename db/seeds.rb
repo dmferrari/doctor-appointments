@@ -56,12 +56,12 @@ create_user(email: 'admin@clinic.com', roles: %w[admin])
 end
 
 # Create some patients
-10.times do
+100.times do
   create_user(email: Faker::Internet.email, roles: %w[patient])
 end
 
 # Create a few appointments
-10.times do
+100.times do
   doctor = User.with_role(:doctor).sample
   patient = User.with_role(:patient).sample
 
