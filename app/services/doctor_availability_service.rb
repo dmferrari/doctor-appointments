@@ -28,6 +28,11 @@ class DoctorAvailabilityService
 
   private
 
+  # Normalizes the given date by returning it if not nil, or a range from today
+  # to one week from now if nil.
+  #
+  # @param date [Date, nil] The date to be normalized.
+  # @return [Range] The normalized date range.
   def normalize_date(date)
     date || (Time.zone.today..1.week.from_now)
   end
@@ -57,6 +62,16 @@ class DoctorAvailabilityService
   end
 
   def calculate_free_intervals(date, working_hours, appointments) # rubocop:disable Metrics/MethodLength
+  # Calculates the free intervals within a given date, working hours, and
+  # appointments.
+  #
+  # @param date [Date] The date for which to calculate the free intervals.
+  # @param working_hours [WorkingHours] The working hours during which the
+  #   intervals should be calculated.
+  # @param appointments [Array<Appointment>] The list of appointments to
+  #   consider when calculating the intervals.
+  # @return [Array<Interval>] An array of intervals representing the free time
+  #   slots.
     free_intervals = []
     current_time = working_hours.start_time
 
