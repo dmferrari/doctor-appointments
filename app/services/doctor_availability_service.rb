@@ -11,11 +11,11 @@ class DoctorAvailabilityService
   end
 
   def working_hours
-    fetch_working_hours(@date)
+    @working_hours ||= fetch_working_hours(@date)
   end
 
   def availability
-    calculate_availability(@date)
+    @availability ||= calculate_availability(@date)
   end
 
   def available_at?(start_time:)
