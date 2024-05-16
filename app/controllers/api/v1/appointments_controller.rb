@@ -62,14 +62,15 @@ module Api
         render json: { error: 'Appointment not found' }, status: :not_found
       end
 
+      def appointment_params
+        params.require(:appointment).permit(:doctor_id, :appointment_date, :start_time)
+      end
+
       def set_doctor
         @doctor = User.doctors.find_by(id: appointment_params[:doctor_id])
         return unless @doctor.nil?
 
         render json: { error: 'Doctor not found' }, status: :not_found
-      end
-      def appointment_params
-        params.require(:appointment).permit(:doctor_id, :patient_id, :appointment_date, :start_time)
       end
     end
   end
