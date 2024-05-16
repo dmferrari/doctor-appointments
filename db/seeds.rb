@@ -38,8 +38,6 @@ def define_working_hours(doctor)
   7.times do |i|
     doctor.working_hours.create!(
       working_date: Time.zone.today + i.days,
-      start_time: '08:00',
-      end_time: '16:00'
       start_time: SESSION_START_TIMES.sample,
       end_time: SESSION_END_TIMES.sample
     )
