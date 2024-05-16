@@ -59,7 +59,6 @@ class DoctorAvailabilityService
     calculate_free_intervals(date, working_hours, appointments)
   end
 
-  def calculate_free_intervals(date, working_hours, appointments) # rubocop:disable Metrics/MethodLength
   # Calculates the free intervals within a given date, working hours, and
   # appointments.
   #
@@ -70,6 +69,7 @@ class DoctorAvailabilityService
   #   consider when calculating the intervals.
   # @return [Array<Interval>] An array of intervals representing the free time
   #   slots.
+  def calculate_free_intervals(date, working_hours, appointments)
     free_intervals = []
     current_time = working_hours.start_time
 
