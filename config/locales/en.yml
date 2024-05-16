@@ -1,31 +1,25 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  appointment: "appointment"
+  doctor: "doctor"
+  logged_in_successfully: "logged in successfully"
+  logged_out_successfully: "logged out successfully"
+  time_format: "%H:%M"
+  working_hour: "working hour"
+  errors:
+    messages:
+      appointment_slot_not_available: "slot is not available"
+      date_cannot_be_in_past: "cannot be in the past"
+      date_range_not_allowed: "date cannot be a range"
+      deletion_failed: "deletion failed"
+      end_time_before_start_time: "must be after start time"
+      invalid_date_format: "invalid date format"
+      invalid_email_or_password: "Invalid email or password"
+      invalid_time_format: "invalid time format"
+      logout_failed: "log out failed"
+      missing_doctor_role: "must have the doctor role"
+      missing_patient_role: "must have patient role"
+      not_found: "%{resource} not found"
+      outside_working_hours: "is outside doctor working hours"
+      same_patient_and_doctor: "patient and doctor cannot be the same"
+      taken_for_doctor_patient_date: "this doctor and patient already have an appointment on this date"
+      unauthorized: "unauthorized"
