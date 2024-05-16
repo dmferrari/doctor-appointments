@@ -3,7 +3,6 @@
 module Api
   module V1
     class AppointmentsController < Api::V1::BaseController
-      before_action :ensure_user_role, only: %i[index show create update destroy]
       before_action :set_doctor, only: %i[create update]
       before_action :set_appointment, only: %i[show update destroy]
 
@@ -69,22 +68,8 @@ module Api
 
         render json: { error: 'Doctor not found' }, status: :not_found
       end
-
-      def set_patient
-        @patient = User.patients.find_by(id: appointment_params[:patient_id])
-        return unless @patient.nil?
-
-        render json: { error: 'Patient not found' }, status: :not_found
-      end
-
       def appointment_params
         params.require(:appointment).permit(:doctor_id, :patient_id, :appointment_date, :start_time)
-      end
-
-      def ensure_user_role
-        return if current_user.has_role?(:doctor) || current_user.has_role?(:patient)
-
-        render json: { error: 'Unauthorized' }, status: :unauthorized
       end
     end
   end
