@@ -17,7 +17,7 @@ module Doctorable
     end
 
     def session_length
-      doctor_profile&.session_length
+      @session_length ||= doctor_profile&.session_length
     end
   end
 end
