@@ -68,7 +68,8 @@ module Api
           render json: { error: I18n.t('errors.messages.unauthorized') }, status: :unauthorized
         end
       rescue ActiveRecord::RecordNotFound
-        render json: { error: I18n.t('errors.messages.not_found') }, status: :not_found
+        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('appointment')) },
+               status: :not_found
       end
 
       def appointment_params
