@@ -26,6 +26,12 @@ class DoctorAvailabilityService
     availability.any? { |slot| within_time_range?(slot[:start_time], slot[:end_time], start_time, end_time) }
   end
 
+  def appointed_at?(start_time:)
+    ensure_date_is_not_a_range
+    end_time = calculate_end_time(start_time)
+    availability.any? { |slot| within_time_range?(slot[:start_time], slot[:end_time], start_time, end_time) }
+  end
+
   def appointment_within_working_hours?(start_time:, end_time:)
     ensure_date_is_not_a_range
     working_hour = fetch_working_hours(@date).first
@@ -82,11 +88,11 @@ class DoctorAvailabilityService
 
   def interval_meets_minimum_session_length?(interval)
     interval_in_minutes = ((string_to_time(interval[:end_time]) - string_to_time(interval[:start_time])) / 60).minutes
-    interval_in_minutes >= doctor.doctor_profile.session_length.minutes
+    interval_in_minutes >= doctor.session_length.minutes
   end
 
   def calculate_end_time(start_time)
-    string_to_time(start_time) + doctor.doctor_profile.session_length.minutes
+    string_to_time(start_time) + doctor.session_length.minutes
   end
 
   def within_time_range?(range_start, range_end, start_time, end_time)
