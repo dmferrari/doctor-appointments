@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DoctorRoleValidator < ActiveModel::Validator
   def validate(record)
     return if record.doctor&.has_role?(:doctor)

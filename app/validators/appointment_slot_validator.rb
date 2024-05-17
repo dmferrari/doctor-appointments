@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentSlotValidator < ActiveModel::Validator
   def validate(record)
     return if record.available_slot?

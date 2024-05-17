@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentDateValidator < ActiveModel::Validator
   def validate(record)
     return unless record.appointment_date < Date.current
