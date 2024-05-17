@@ -37,7 +37,8 @@ class Appointment < ApplicationRecord
 
       save!
     end
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error(e.message)
     false
   end
 
