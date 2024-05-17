@@ -34,7 +34,10 @@ module Api
       end
 
       def update
-        if @appointment.update(appointment_params)
+        if @appointment.update_appointment(
+          new_date: appointment_params[:appointment_date],
+          new_start_time: appointment_params[:start_time]
+        )
           render json: { appointment: @appointment }, status: :ok
         else
           render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
