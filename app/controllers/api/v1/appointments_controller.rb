@@ -55,7 +55,12 @@ module Api
       private
 
       def set_appointment
-        if current_user.has_role?(:patient)
+        if current_user.has_all_roles?(:patient, :doctor)
+          @appointment = Appointment.find_by(id: params[:id], patient: current_user) ||
+                         Appointment.find_by(id: params[:id], doctor: current_user)
+
+          raise ActiveRecord::RecordNotFound if @appointment.nil?
+        elsif current_user.has_role?(:patient)
           @appointment = Appointment.find_by!(id: params[:id], patient: current_user)
         elsif current_user.has_role?(:doctor)
           @appointment = Appointment.find_by!(id: params[:id], doctor: current_user)
