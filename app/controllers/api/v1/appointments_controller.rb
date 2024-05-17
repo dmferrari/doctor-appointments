@@ -3,7 +3,7 @@
 module Api
   module V1
     class AppointmentsController < Api::V1::BaseController
-      before_action :set_doctor, only: %i[create update]
+      before_action :set_doctor, only: :create
       before_action :set_appointment, only: %i[show update destroy]
 
       def index
@@ -64,7 +64,11 @@ module Api
       end
 
       def appointment_params
-        params.require(:appointment).permit(:doctor_id, :date, :appointment_date, :start_time)
+        if action_name == 'update'
+          params.require(:appointment).permit(:appointment_date, :start_time)
+        else
+          params.require(:appointment).permit(:doctor_id, :appointment_date, :start_time)
+        end
       end
 
       def set_doctor
