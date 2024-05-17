@@ -3,8 +3,8 @@
 module Api
   module V1
     class AppointmentsController < Api::V1::BaseController
-      before_action :set_doctor, only: :create
       before_action :set_appointment, only: %i[show update destroy]
+      before_action :set_doctor, only: :create
 
       def index
         render json: {
@@ -54,30 +54,32 @@ module Api
 
       private
 
-      def set_appointment
-        if current_user.has_all_roles?(:patient, :doctor)
-          @appointment = Appointment.find_by(id: params[:id], patient: current_user) ||
-                         Appointment.find_by(id: params[:id], doctor: current_user)
-
-          raise ActiveRecord::RecordNotFound if @appointment.nil?
-        elsif current_user.has_role?(:patient)
-          @appointment = Appointment.find_by!(id: params[:id], patient: current_user)
-        elsif current_user.has_role?(:doctor)
-          @appointment = Appointment.find_by!(id: params[:id], doctor: current_user)
-        else
-          render json: { error: I18n.t('errors.messages.unauthorized') }, status: :unauthorized
-        end
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('appointment')) },
-               status: :not_found
-      end
-
       def appointment_params
         if action_name == 'update'
           params.require(:appointment).permit(:appointment_date, :start_time)
         else
           params.require(:appointment).permit(:doctor_id, :appointment_date, :start_time)
         end
+      end
+
+      def set_appointment # rubocop:disable Metrics/AbcSize
+        if current_user.has_all_roles?(:patient, :doctor)
+          @appointment = find_appointment_as_patient_or_doctor!
+        elsif current_user.has_role?(:patient)
+          @appointment = Appointment.find_by!(id: params[:id], patient: current_user)
+        elsif current_user.has_role?(:doctor)
+          @appointment = Appointment.find_by!(id: params[:id], doctor: current_user)
+        end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('appointment')) }, status: :not_found
+      end
+
+      def find_appointment_as_patient_or_doctor!
+        appointment = Appointment.find_by(id: params[:id], patient: current_user) ||
+                      Appointment.find_by(id: params[:id], doctor: current_user)
+        raise ActiveRecord::RecordNotFound if appointment.nil?
+
+        appointment
       end
 
       def set_doctor
