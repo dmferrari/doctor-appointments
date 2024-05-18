@@ -26,6 +26,9 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
   describe 'GET #show' do
     context 'when the appointment exists' do
       context 'when the appointment belongs to the patient' do
+        it 'returns the appointment' do
+          expect(response).to have_http_status(:ok)
+        end
       end
     end
   end
