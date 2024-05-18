@@ -8,7 +8,10 @@ FactoryBot.define do
     password_confirmation { 'password123' }
 
     trait :doctor do
-      after(:create) { |user| user.add_role(:doctor) }
+      after(:create) do |user|
+        user.add_role(:doctor)
+        create(:doctor_profile, doctor: user)
+      end
     end
 
     trait :patient do
