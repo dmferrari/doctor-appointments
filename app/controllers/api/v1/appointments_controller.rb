@@ -7,14 +7,12 @@ module Api
       before_action :set_doctor, only: :create
 
       def index
-        render json: {
-          appointments: current_user.doctor_appointments + current_user.patient_appointments
-        }, status: :ok
+        render json: current_user.doctor_appointments + current_user.patient_appointments, status: :ok
       end
 
       def show
         if @appointment
-          render json: { appointment: @appointment }, status: :ok
+          render json: @appointment, status: :ok
         else
           render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('appointment')) },
                  status: :not_found
@@ -27,7 +25,7 @@ module Api
         end
 
         if appointment.save
-          render json: { appointment: }, status: :created
+          render json: appointment, status: :created
         else
           render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
         end
@@ -38,7 +36,7 @@ module Api
           new_date: appointment_params[:appointment_date],
           new_start_time: appointment_params[:start_time]
         )
-          render json: { appointment: @appointment }, status: :ok
+          render json: @appointment, status: :ok
         else
           render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
         end

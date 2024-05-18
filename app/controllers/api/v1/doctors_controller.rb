@@ -10,11 +10,15 @@ module Api
       before_action :set_requested_date, only: %i[availability working_hours]
 
       def working_hours
-        render json: @doctor.working_hours(date: @requested_date), status: :ok
+        working_hours = @doctor.working_hours(date: @requested_date)
+        render json: working_hours, each_serializer: WorkingHourSerializer, status: :ok
       end
 
       def availability
-        render json: @doctor.availability(date: @requested_date), status: :ok
+        availability = @doctor.availability(date: @requested_date)
+        serialized_availability = SerializableAvailability.wrap(availability)
+
+        render json: serialized_availability, each_serializer: AvailabilitySerializer, status: :ok
       end
 
       private
