@@ -20,9 +20,8 @@ module Api
       end
 
       def create
-        appointment = Appointment.new(appointment_params).tap do |appt|
-          appt.patient = current_user
-        end
+        appointment = Appointment.new(appointment_params)
+        appointment.patient = current_user
 
         if appointment.save
           render json: appointment, status: :created
