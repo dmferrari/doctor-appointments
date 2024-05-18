@@ -72,3 +72,6 @@ end
     start_time: APPOINTMENT_START_TIMES.sample
   )
 end
+
+# Create a default user
+create_user(email: 'dmferrari@gmail.com', roles: %w[doctor patient])
