@@ -24,4 +24,8 @@ module DateTimeParser
   rescue ArgumentError
     raise ArgumentError, I18n.t('errors.messages.invalid_date_format')
   end
+
+  def date_to_string(date)
+    date.strftime(I18n.t('date_format'))
+  end
 end
