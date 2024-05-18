@@ -8,6 +8,9 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
   let(:patient) { create(:user, :patient) }
   let(:doctor_and_patient) { create(:user, :doctor_and_patient) }
   let(:user) { create(:user) }
+  let(:appointment) do
+    create(:appointment, doctor:, patient:, appointment_date: Time.zone.today, start_time: '10:00')
+  end
 
   before do
     sign_in user
