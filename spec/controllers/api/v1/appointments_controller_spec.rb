@@ -8,11 +8,10 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
   let(:patient) { create(:user, :patient) }
   let(:date) { Time.zone.today }
   let(:appointment_date) { date }
+  let(:appointment_start_time) { '11:00' }
   let(:start_time) { '10:00' }
   let(:end_time) { '17:00' }
-  let!(:appointment) do
-    create(:appointment, doctor:, patient:, appointment_date: date, start_time:)
-  end
+  let(:appointment) { create(:appointment, doctor:, patient:, appointment_date:, start_time: appointment_start_time) }
   let!(:working_hours) do
     7.times do |i|
       create(:working_hour, doctor:, working_date: date + i.days, start_time:, end_time:)
@@ -23,8 +22,8 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
     before { sign_in patient }
 
     it 'returns a successful response' do
-      expect(response).to have_http_status(:ok)
       get :index
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -66,7 +65,7 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
 
   describe 'POST #create' do # rubocop:disable Metrics/BlockLength
     let(:appointment_params) do
-      { appointment: { doctor_id: doctor&.id, appointment_date:, start_time: } }
+      { appointment: { doctor_id: doctor&.id, appointment_date:, start_time: appointment_start_time } }
     end
 
     before { sign_in patient }
@@ -89,30 +88,99 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
         it 'returns an unprocessable entity error' do
           post :create, params: appointment_params
           expect(response).to have_http_status(:unprocessable_entity)
-        end
-      end
-
-      context 'when the start time is not provided' do
-        let(:start_time) { nil }
-
-        it 'returns an unprocessable entity error' do
-          post :create, params: appointment_params
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-      end
-
-      context 'when the doctor does not exist' do
-        let(:doctor) { nil }
-
-        it 'returns an unprocessable entity error' do
-          post :create, params: appointment_params
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include("Appointment date can't be blank")
         end
       end
 
       context 'when the appointment date is in the past' do
         let(:appointment_date) { date - 1.day }
         let(:start_time) { '11:00' }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include(I18n.t('errors.messages.date_cannot_be_in_past'))
+        end
+      end
+
+      context 'when the appointment date is not a valid date' do
+        let(:appointment_date) { 'invalid_date' }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include("Appointment date can't be blank")
+        end
+      end
+
+      context 'when the start time is not provided' do
+        let(:appointment_start_time) { nil }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include("Start time can't be blank")
+        end
+      end
+
+      context 'when the start time is not a valid time' do
+        let(:appointment_start_time) { '99:99' }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include(I18n.t('errors.messages.invalid_time_format'))
+        end
+      end
+
+      context 'when the appointment is not within the doctor working hours' do
+        let(:appointment_start_time) { '22:00' }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include(I18n.t('errors.messages.outside_working_hours'))
+        end
+      end
+
+      context 'when the appointment is not available' do
+        let(:appointment_start_time) { '12:00' }
+        let!(:existing_appointment) do
+          create(:appointment, doctor:, patient:, appointment_date:, start_time: appointment_start_time)
+        end
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include(I18n.t('errors.messages.appointment_slot_not_available'))
+        end
+      end
+
+      context 'when the patient has an appointment at the same date' do
+        let(:appointment_start_time) { '19:00' }
+        let!(:existing_appointment) do
+          create(:appointment, doctor:, patient:, appointment_date:, start_time: '13:00')
+        end
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include(I18n.t('errors.messages.taken_for_doctor_patient_date'))
+        end
+      end
+
+      context 'when the doctor does not exist' do
+        let(:doctor) { nil }
+        let(:working_hours) { nil }
+
+        it 'returns an unprocessable entity error' do
+          post :create, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'when the doctor and the patient are the same user' do
+        let(:patient) { doctor }
 
         it 'returns an unprocessable entity error' do
           post :create, params: appointment_params
