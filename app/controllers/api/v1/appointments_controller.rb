@@ -83,7 +83,8 @@ module Api
         @doctor = User.doctors.find_by(id: appointment_params[:doctor_id])
         return unless @doctor.nil?
 
-        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) }, status: :not_found
+        render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) },
+               status: :unprocessable_entity
       end
     end
   end
