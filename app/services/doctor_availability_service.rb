@@ -35,6 +35,8 @@ class DoctorAvailabilityService
   def appointment_within_working_hours?(start_time:, end_time:)
     ensure_date_is_not_a_range
     working_hour = fetch_working_hours(@date).first
+    return false unless working_hour
+
     within_time_range?(working_hour.start_time, working_hour.end_time, start_time, end_time)
   end
 
