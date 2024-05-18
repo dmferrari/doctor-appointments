@@ -75,14 +75,9 @@ class Appointment < ApplicationRecord
   end
 
   def validate_appointment_slot
-    return if same_day_time_change?
     return if available_slot?
 
     errors.add(:base, I18n.t('errors.messages.taken_for_doctor_patient_date'))
-  end
-
-  def same_day_time_change?
-    persisted? && appointment_date == appointment_date_was && patient_id == patient_id_was && doctor_id == doctor_id_was
   end
 
   def start_time_to_string
