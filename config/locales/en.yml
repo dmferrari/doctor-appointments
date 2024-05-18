@@ -4,6 +4,7 @@ en:
   logged_in_successfully: "logged in successfully"
   logged_out_successfully: "logged out successfully"
   time_format: "%H:%M"
+  date_format: "%Y-%m-%d"
   working_hour: "working hour"
   errors:
     messages:
