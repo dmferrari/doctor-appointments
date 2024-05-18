@@ -7,8 +7,16 @@ class WorkingHour < ApplicationRecord
              inverse_of: :working_hours
 
   validate :doctor_role
-  validates :working_date, :start_time, :end_time, presence: true
-  validate :start_time_before_end_time
+  validates :working_date, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
+  validates :start_time,
+            format: { with: /\A\d{2}:\d{2}\z/, message: I18n.t('errors.messages.invalid_time_format') },
+            unless: -> { errors[:start_time].any? }
+  validates :end_time,
+            format: { with: /\A\d{2}:\d{2}\z/, message: I18n.t('errors.messages.invalid_time_format') },
+            unless: -> { errors[:end_time].any? }
+  validate :start_time_before_end_time, unless: -> { errors[:start_time].any? || errors[:end_time].any? }
 
   private
 

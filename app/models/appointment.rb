@@ -15,13 +15,19 @@ class Appointment < ApplicationRecord
 
   before_save :set_end_time, if: -> { start_time.present? }
 
-  validates :appointment_date, :start_time, presence: true
-  validates :start_time, format: { with: /\A\d{2}:\d{2}\z/, message: I18n.t('errors.messages.invalid_time_format') }
+  validates :appointment_date, presence: true
+  validates :start_time, presence: true
+  validate :validate_start_time, unless: -> { errors[:start_time].any? }
+  validates :start_time,
+            format: { with: /\A\d{2}:\d{2}\z/, message: I18n.t('errors.messages.invalid_time_format') },
+            unless: -> { errors[:start_time].any? }
   validates_with DoctorRoleValidator
   validates_with PatientRoleValidator
   validates_with AppointmentSlotValidator, unless: -> { errors[:appointment_date].any? || errors[:start_time].any? }
   validates_with AppointmentDateValidator, unless: -> { errors[:appointment_date].any? }
-  validates_with WorkingHoursValidator, unless: -> { errors[:appointment_date].any? || errors[:doctor].any? }
+  validates_with WorkingHoursValidator, unless: lambda {
+                                                  errors[:appointment_date].any? || errors[:doctor].any? || errors[:start_time].any?
+                                                }
   validate :patient_and_doctor_cannot_be_the_same
   validate :validate_appointment_slot, unless: -> { new_record? }
 
@@ -60,6 +66,12 @@ class Appointment < ApplicationRecord
 
   def patient_and_doctor_cannot_be_the_same
     errors.add(:base, I18n.t('errors.messages.same_patient_and_doctor')) if doctor.id == patient.id
+  end
+
+  def validate_start_time
+    return if string_to_time(start_time)
+
+    errors.add(:start_time, I18n.t('errors.messages.invalid_time_format'))
   end
 
   def validate_appointment_slot
