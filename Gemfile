@@ -6,8 +6,9 @@ ruby '3.3.1'
 gem 'rails', '~> 7.1'
 
 gem 'active_model_serializers'
-gem 'bootsnap', require: false
-gem 'bundler', '~> 2.5.7'
+gem 'acts_as_paranoid'
+gem 'bootsnap'
+gem 'bundler'
 gem 'cancancan'
 gem 'devise'
 gem 'devise-jwt'
@@ -16,6 +17,7 @@ gem 'puma'
 gem 'redis'
 gem 'rolify'
 gem 'sidekiq'
+gem 'sidekiq-cron'
 gem 'sidekiq-scheduler'
 
 group :development, :test do
