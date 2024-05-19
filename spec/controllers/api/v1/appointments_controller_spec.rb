@@ -190,9 +190,72 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
     end
   end
 
-  describe 'PATCH #update' do
-    it 'returns a successful response' do
-      expect(response).to have_http_status(:ok)
+  describe 'PATCH #update' do # rubocop:disable Metrics/BlockLength
+    before { sign_in patient }
+
+    let(:appointment_id) { appointment.id }
+    let(:updated_appointment_date) { appointment.appointment_date }
+    let(:updated_start_time) { '14:00' }
+    let(:appointment_params) do
+      { id: appointment_id,
+        appointment: { appointment_date: updated_appointment_date, start_time: updated_start_time } }
+    end
+
+    context 'when the appointment is updated successfully' do
+      it 'returns a successful response' do
+        patch :update, params: appointment_params
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(AppointmentSerializer.new(appointment.reload).to_json)
+      end
+    end
+
+    context 'when the appointment is not updated successfully' do # rubocop:disable Metrics/BlockLength
+      context 'when the appointment is not found' do
+        let(:appointment_id) { -1 }
+
+        it 'returns a not found error' do
+          patch :update, params: appointment_params
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      context 'when the appointment belongs to another patient' do
+        before do
+          appointment.update(patient: create(:user, :patient))
+        end
+
+        it 'returns a not found error' do
+          patch :update, params: appointment_params
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      context 'when the appointment date is in the past' do
+        let(:updated_appointment_date) { appointment.appointment_date - 1.day }
+
+        it 'returns an unprocessable entity error' do
+          patch :update, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'when the appointment date is not a valid date' do
+        let(:updated_appointment_date) { 'invalid_date' }
+
+        it 'returns an unprocessable entity error' do
+          patch :update, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'when the start time is not a valid time' do
+        let(:updated_start_time) { '99:99' }
+
+        it 'returns an unprocessable entity error' do
+          patch :update, params: appointment_params
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
     end
   end
 
