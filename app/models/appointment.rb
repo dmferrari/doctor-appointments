@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Appointment < ApplicationRecord
+  acts_as_paranoid
+
   include DateTimeParser
 
   belongs_to :doctor, -> { with_role(:doctor) },
