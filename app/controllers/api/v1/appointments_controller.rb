@@ -24,6 +24,7 @@ module Api
         appointment.patient = current_user
 
         if appointment.save
+          send_email_notification(appointment, action_name)
           render json: appointment, status: :created
         else
           render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
@@ -35,6 +36,7 @@ module Api
           new_date: appointment_params[:appointment_date],
           new_start_time: appointment_params[:start_time]
         )
+          send_email_notification(@appointment, action_name)
           render json: @appointment, status: :ok
         else
           render json: { error: @appointment.errors.full_messages }, status: :unprocessable_entity
@@ -43,6 +45,7 @@ module Api
 
       def destroy
         if @appointment.destroy
+          send_email_notification(@appointment, action_name)
           render json: {}, status: :ok
         else
           render json: { error: I18n.t('errors.messages.deletion_failed') }, status: :unprocessable_entity
@@ -85,6 +88,10 @@ module Api
 
         render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) },
                status: :unprocessable_entity
+      end
+
+      def send_email_notification(appointment, action)
+        AppointmentNotificationJob.perform_async(appointment.id, action)
       end
     end
   end

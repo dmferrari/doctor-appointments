@@ -1,0 +1,11 @@
+<h1>Appointment Created</h1>
+<p>Dear <%= @appointment.patient.full_name %>,</p>
+<p>Your appointment has been successfully created:</p>
+<ul>
+  <li><strong>Doctor:</strong> <%= @appointment.doctor.full_name %> - <%= @appointment.doctor.doctor_profile.specialty %></li>
+  <li><strong>Date:</strong> <%= @appointment.appointment_date.strftime('%A, %B %d, %Y') %></li>
+  <li><strong>Time:</strong> <%= @appointment.start_time %></li>
+</ul>
+<p>Please contact us if you have any questions or need to reschedule.</p>
+<p>Best regards,</p>
+<p>Your Clinic Team</p>

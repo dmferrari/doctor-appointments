@@ -1,0 +1,3 @@
+daily_appointment_reminder:
+  cron: "0 * * * *" # Runs every hour
+  class: "DailyAppointmentReminderJob"

@@ -6,6 +6,12 @@ en:
   time_format: "%H:%M"
   date_format: "%Y-%m-%d"
   working_hour: "working hour"
+  appointment_mailer:
+    subjects:
+      appointment_created: "Your appointment has been created"
+      appointment_updated: "Your appointment has been updated"
+      appointment_canceled: "Your appointment has been canceled"
+      appointment_reminder: "Appointment Reminder"
   errors:
     messages:
       appointment_slot_not_available: "slot is not available"
