@@ -31,4 +31,8 @@ class User < ApplicationRecord
   def has_all_roles?(*roles) # rubocop:disable Naming/PredicateName
     roles.all? { |role| has_role?(role) }
   end
+
+  def locale
+    self[:locale] || 'en'
+  end
 end
