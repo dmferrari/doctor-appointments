@@ -7,6 +7,8 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
   web:
     build: .
     volumes:
@@ -20,6 +22,7 @@ services:
       - db
       - redis
     environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - REDIS_URL=${REDIS_URL}
 
   redis:
@@ -31,17 +34,18 @@ services:
       - "redis:/data"
 
   sidekiq:
-    depends_on:
-      - db
-      - redis
     build: .
     command: bundle exec sidekiq
     stdin_open: true
     tty: true
     volumes:
-      - ".:/web"
+      - .:/app
     environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - REDIS_URL=${REDIS_URL}
+    depends_on:
+      - db
+      - redis
 
 volumes:
   redis:
