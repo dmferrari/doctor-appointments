@@ -18,9 +18,9 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
     end
   end
 
-  describe 'GET #index' do
-    before { sign_in patient }
+  before { sign_in patient }
 
+  describe 'GET #index' do
     it 'returns a successful response' do
       get :index
       expect(response).to have_http_status(:ok)
@@ -28,8 +28,6 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
   end
 
   describe 'GET #show' do # rubocop:disable Metrics/BlockLength
-    before { sign_in patient }
-
     context 'when the appointment exists' do
       context 'when the appointment belongs to the patient' do
         it 'returns the appointment' do
@@ -67,8 +65,6 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
     let(:appointment_params) do
       { appointment: { doctor_id: doctor&.id, appointment_date:, start_time: appointment_start_time } }
     end
-
-    before { sign_in patient }
 
     context 'when the appointment is created successfully' do
       let(:appointment_date) { date + 1.day }
@@ -191,8 +187,6 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
   end
 
   describe 'PATCH #update' do # rubocop:disable Metrics/BlockLength
-    before { sign_in patient }
-
     let(:appointment_id) { appointment.id }
     let(:updated_appointment_date) { appointment.appointment_date }
     let(:updated_start_time) { '14:00' }
