@@ -11,7 +11,6 @@ module Constants
 
   DOCTOR_SPECIALTIES = %w[
     Cardiology
-
     Dermatology
     Endocrinology
     Gastroenterology
