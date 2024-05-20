@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 class DoctorAvailabilityService
-  include ActiveModel::Validations
   include DateTimeParser
 
   class DateRangeNotAllowedError < StandardError; end
-
-  validates :date, presence: true
-  validates :doctor, presence: true
 
   attr_reader :doctor, :date
 
