@@ -47,7 +47,7 @@ class DoctorAvailabilityService
   end
 
   def resolve_date(date)
-    date || (Time.zone.today..1.week.from_now)
+    date || (Time.zone.today..6.days.from_now)
   end
 
   def fetch_working_hours(date)
