@@ -46,7 +46,7 @@ module Api
       def destroy
         if @appointment.destroy
           send_email_notification(@appointment, action_name)
-          render json: {}, status: :ok
+          head :no_content
         else
           render json: { error: I18n.t('errors.messages.deletion_failed') }, status: :unprocessable_entity
         end
