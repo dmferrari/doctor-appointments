@@ -43,4 +43,5 @@ end
 group :test do
   gem 'rspec-rails'
   gem 'rspec-sidekiq'
+  gem 'shoulda-matchers'
 end
