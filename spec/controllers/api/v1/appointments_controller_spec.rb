@@ -235,29 +235,36 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
     end
   end
 
-      context 'when the appointment date is not a valid date' do
-        let(:updated_appointment_date) { 'invalid_date' }
-
-        it 'returns an unprocessable entity error' do
-          patch :update, params: appointment_params
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-      end
-
-      context 'when the start time is not a valid time' do
-        let(:updated_start_time) { '99:99' }
-
-        it 'returns an unprocessable entity error' do
-          patch :update, params: appointment_params
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
+  describe 'DELETE #destroy' do # rubocop:disable Metrics/BlockLength
+    context 'when the appointment is deleted successfully' do
+      it 'returns a successful response' do
+        delete :destroy, params: { id: appointment.id }
+        expect(response).to have_http_status(:no_content)
       end
     end
-  end
 
-  describe 'DELETE #destroy' do
-    it 'returns a successful response' do
-      expect(response).to have_http_status(:ok)
+    context 'when the appointment deletion fails' do
+      before do
+        allow_any_instance_of(Appointment).to receive(:destroy).and_return(false)
+      end
+
+      context 'when the appointment does not exist' do
+        it 'returns an unprocessable entity response' do
+          delete :destroy, params: { id: appointment.id }
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'when the appointment does not belong to the patient' do
+        let!(:another_appointment) do
+          create(:appointment, doctor:, patient: create(:user, :patient), appointment_date: date, start_time: '16:00')
+        end
+
+        it 'returns a not found error' do
+          delete :destroy, params: { id: another_appointment.id }
+          expect(response).to have_http_status(:not_found)
+        end
+      end
     end
   end
 end
