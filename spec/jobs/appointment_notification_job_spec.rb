@@ -4,9 +4,12 @@ require 'rails_helper'
 require 'sidekiq/testing'
 
 RSpec.describe AppointmentNotificationJob, type: :job do
-  let(:doctor) { create(:user, :doctor) }
-  let(:patient) { create(:user, :patient) }
-  let(:appointment) { create(:appointment, doctor:, patient:) }
+  let!(:doctor) { create(:user, :doctor) }
+  let!(:patient) { create(:user, :patient) }
+  let(:working_hour) { create(:working_hour, doctor:, working_date: Time.zone.today) }
+  let(:appointment) do
+    create(:appointment, doctor:, patient:, appointment_date: working_hour.working_date)
+  end
 
   before do
     Sidekiq::Testing.inline!
