@@ -203,7 +203,7 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
       end
     end
 
-    context 'when the appointment is not updated successfully' do # rubocop:disable Metrics/BlockLength
+    context 'when the appointment is not updated successfully' do
       context 'when the appointment is not found' do
         let(:appointment_id) { -1 }
 
@@ -232,6 +232,8 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do # rubocop:d
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
+    end
+  end
 
       context 'when the appointment date is not a valid date' do
         let(:updated_appointment_date) { 'invalid_date' }
