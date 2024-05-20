@@ -5,7 +5,6 @@ module Api
     class DoctorsController < Api::V1::BaseController
       include DateTimeParser
 
-      before_action :ensure_doctor_role, only: %i[availability working_hours]
       before_action :set_doctor, only: %i[availability working_hours]
       before_action :set_requested_date, only: %i[availability working_hours]
 
@@ -28,12 +27,6 @@ module Api
         return unless @doctor.nil?
 
         render json: { error: I18n.t('errors.messages.not_found', resource: I18n.t('doctor')) }, status: :not_found
-      end
-
-      def ensure_doctor_role
-        return if current_user.has_role?(:doctor)
-
-        render json: { error: I18n.t('errors.messages.unauthorized') }, status: :unauthorized
       end
 
       def set_requested_date
