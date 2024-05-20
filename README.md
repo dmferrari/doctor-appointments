@@ -31,17 +31,15 @@ JWT_SECRET_KEY=your_jwt_secret_key
 ### Build and start the services
 
 ```sh
-docker-compose up --build
+docker compose up --build
 ```
 
 ### **Set up the database:**
 
-Open a new terminal window and run the following commands:
+When the previous command finishes, open a new terminal window, go to the project directory and run the following commands:
 
 ```sh
-docker-compose run web rake db:create
-docker-compose run web rake db:migrate
-docker-compose run web rake db:seed
+docker compose run web bin/rails db:create db:migrate db:seed
 ```
 
 ## Usage
@@ -52,9 +50,34 @@ docker-compose run web rake db:seed
 docker compose run web bin/rails c
 ```
 
+To test this, you can access the latest appointment created by running the following command:
+
+```ruby
+Appointment.last
+```
+
+This should return something like:
+
+```ruby
+  Appointment Load (0.5ms)  SELECT "appointments".* FROM "appointments" WHERE "appointments"."deleted_at" IS NULL ORDER BY "appointments"."id" DESC LIMIT $1  [["LIMIT", 1]]
+=>
+#<Appointment:0x00007f33c428aad8
+ id: 73,
+ doctor_id: 6,
+ patient_id: 106,
+ appointment_date: Thu, 23 May 2024 00:00:00.000000000 UTC +00:00,
+ start_time: "14:00",
+ end_time: "15:00",
+ created_at: Mon, 20 May 2024 15:37:02.125789000 UTC +00:00,
+ updated_at: Mon, 20 May 2024 15:37:02.125789000 UTC +00:00,
+ deleted_at: nil>
+```
+
 ### Access the Rails server
 
 The application will be available at <http://localhost:3000>.
+
+There is nothing to see here.
 
 ### Sidekiq dashboard
 
@@ -547,5 +570,5 @@ Response:
 To run the test suite, execute:
 
 ```sh
-docker-compose run web rspec
+docker compose run web rspec
 ```
