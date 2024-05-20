@@ -3,8 +3,6 @@
 class AppointmentNotificationJob
   include Sidekiq::Job
 
-  sidekiq_options retry: 3
-
   def perform(appointment_id, action)
     appointment = Appointment.with_deleted.find(appointment_id)
 
