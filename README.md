@@ -12,7 +12,7 @@ ClinicChallenge is a Rails-based API service for managing doctor appointments. T
 ### Clone the repository
 
    ```sh
-   git clone https://github.com/dmferrari/clinic-challenge.git
+   git clone git@github.com:dmferrari/clinic-challenge.git
    cd clinic-challenge
    ```
 
