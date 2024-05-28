@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require 'spec_helper'
+require 'support/shared_examples/unauthenticated_user'
 
 RSpec.describe Api::V1::DoctorsController, type: :controller do # rubocop:disable Metrics/BlockLength
   include DateTimeParser
@@ -23,12 +24,6 @@ RSpec.describe Api::V1::DoctorsController, type: :controller do # rubocop:disabl
   end
 
   before { request.headers['Accept'] = 'application/json' }
-
-  shared_examples 'an unauthenticated user' do
-    it 'returns an unauthorized response' do
-      expect(response).to have_http_status(:unauthorized)
-    end
-  end
 
   context 'when the user is not authenticated' do
     describe 'GET #working_hours' do
