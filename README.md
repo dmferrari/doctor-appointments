@@ -13,7 +13,7 @@ ClinicChallenge is a Rails-based API service for managing doctor appointments. T
 
    ```sh
    git clone https://github.com/dmferrari/clinic-challenge.git
-   cd clinic_challenge
+   cd clinic-challenge
    ```
 
 ### Create environment variables file
