@@ -22,91 +22,115 @@ RSpec.describe Api::V1::DoctorsController, type: :controller do # rubocop:disabl
     ]
   end
 
-  before do
-    sign_in patient
-    (0..7).each do |i|
-      create(:working_hour, doctor:, working_date: date + i.days, start_time:, end_time:)
+  before { request.headers['Accept'] = 'application/json' }
+
+  shared_examples 'an unauthenticated user' do
+    it 'returns an unauthorized response' do
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
-  describe 'GET #working_hours' do # rubocop:disable Metrics/BlockLength
-    context 'when the doctor exists' do
-      context 'when the date is provided' do
-        it 'returns the working hours' do
-          get :working_hours, params: { id: doctor.id, date: }
-
-          serialized_working_hours =
-            ActiveModelSerializers::SerializableResource.new(
-              doctor.working_hours(date:), each_serializer: WorkingHourSerializer
-            ).to_json
-          expect(response.body).to eq(serialized_working_hours)
-          expect(response.parsed_body.size).to eq(1)
-          expect(response).to have_http_status(:ok)
-        end
-      end
-
-      context 'when the date is not provided' do
-        it 'returns the working hours for the next 7 days' do
-          get :working_hours, params: { id: doctor.id }
-
-          serialized_working_hours =
-            ActiveModelSerializers::SerializableResource.new(
-              doctor.working_hours, each_serializer: WorkingHourSerializer
-            ).to_json
-          expect(response.body).to eq(serialized_working_hours)
-          expect(response.parsed_body.size).to eq(7)
-          expect(response).to have_http_status(:ok)
-        end
+  context 'when the user is not authenticated' do
+    describe 'GET #working_hours' do
+      it_behaves_like 'an unauthenticated user' do
+        before { get :working_hours, params: { id: doctor.id } }
       end
     end
 
-    context 'when the doctor does not exist' do
-      it 'returns not found' do
-        get :working_hours, params: { id: -1 }
-        expect(response).to have_http_status(:not_found)
+    describe 'GET #availability' do
+      it_behaves_like 'an unauthenticated user' do
+        before { get :availability, params: { id: doctor.id } }
       end
     end
   end
 
-  describe 'GET #availability' do # rubocop:disable Metrics/BlockLength
-    context 'when the doctor exists' do # rubocop:disable Metrics/BlockLength
-      context 'when the date is provided' do
-        it 'returns the availability for that day' do
-          get :availability, params: { id: doctor.id, date: }
+  context 'when the user is authenticated' do # rubocop:disable Metrics/BlockLength
+    before do
+      sign_in patient
+      (0..7).each do |i|
+        create(:working_hour, doctor:, working_date: date + i.days, start_time:, end_time:)
+      end
+    end
 
-          serializable_availability = SerializableAvailability.wrap(doctor.availability(date:))
-          serialized_availability =
-            ActiveModelSerializers::SerializableResource.new(
-              serializable_availability, each_serializer: AvailabilitySerializer
-            ).to_json
+    describe 'GET #working_hours' do # rubocop:disable Metrics/BlockLength
+      context 'when the doctor exists' do
+        context 'when the date is provided' do
+          it 'returns the working hours' do
+            get :working_hours, params: { id: doctor.id, date: }
 
-          expect(response.body).to eq(serialized_availability)
-          expect(response.parsed_body.size).to eq(1)
-          expect(response).to have_http_status(:ok)
+            serialized_working_hours =
+              ActiveModelSerializers::SerializableResource.new(
+                doctor.working_hours(date:), each_serializer: WorkingHourSerializer
+              ).to_json
+            expect(response.body).to eq(serialized_working_hours)
+            expect(response.parsed_body.size).to eq(1)
+            expect(response).to have_http_status(:ok)
+          end
+        end
+
+        context 'when the date is not provided' do
+          it 'returns the working hours for the next 7 days' do
+            get :working_hours, params: { id: doctor.id }
+
+            serialized_working_hours =
+              ActiveModelSerializers::SerializableResource.new(
+                doctor.working_hours, each_serializer: WorkingHourSerializer
+              ).to_json
+            expect(response.body).to eq(serialized_working_hours)
+            expect(response.parsed_body.size).to eq(7)
+            expect(response).to have_http_status(:ok)
+          end
         end
       end
 
-      context 'when the date is not provided' do
-        it 'returns the availability for the next 7 days' do
-          get :availability, params: { id: doctor.id }
-
-          serializable_availability = SerializableAvailability.wrap(doctor.availability)
-          serialized_availability =
-            ActiveModelSerializers::SerializableResource.new(
-              serializable_availability, each_serializer: AvailabilitySerializer
-            ).to_json
-
-          expect(response.body).to eq(serialized_availability)
-          expect(response.parsed_body.size).to eq(7)
-          expect(response).to have_http_status(:ok)
+      context 'when the doctor does not exist' do
+        it 'returns not found' do
+          get :working_hours, params: { id: -1 }
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
 
-    context 'when the doctor does not exist' do
-      it 'returns not found' do
-        get :availability, params: { id: -1 }
-        expect(response).to have_http_status(:not_found)
+    describe 'GET #availability' do # rubocop:disable Metrics/BlockLength
+      context 'when the doctor exists' do # rubocop:disable Metrics/BlockLength
+        context 'when the date is provided' do
+          it 'returns the availability for that day' do
+            get :availability, params: { id: doctor.id, date: }
+
+            serializable_availability = SerializableAvailability.wrap(doctor.availability(date:))
+            serialized_availability =
+              ActiveModelSerializers::SerializableResource.new(
+                serializable_availability, each_serializer: AvailabilitySerializer
+              ).to_json
+
+            expect(response.body).to eq(serialized_availability)
+            expect(response.parsed_body.size).to eq(1)
+            expect(response).to have_http_status(:ok)
+          end
+        end
+
+        context 'when the date is not provided' do
+          it 'returns the availability for the next 7 days' do
+            get :availability, params: { id: doctor.id }
+
+            serializable_availability = SerializableAvailability.wrap(doctor.availability)
+            serialized_availability =
+              ActiveModelSerializers::SerializableResource.new(
+                serializable_availability, each_serializer: AvailabilitySerializer
+              ).to_json
+
+            expect(response.body).to eq(serialized_availability)
+            expect(response.parsed_body.size).to eq(7)
+            expect(response).to have_http_status(:ok)
+          end
+        end
+      end
+
+      context 'when the doctor does not exist' do
+        it 'returns not found' do
+          get :availability, params: { id: -1 }
+          expect(response).to have_http_status(:not_found)
+        end
       end
     end
   end
