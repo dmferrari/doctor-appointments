@@ -10,8 +10,8 @@
 # Ignore all environment files (except templates).
 
 ### IMPORTANT ###
-  THIS OVERRIDE IS JUST FOR DEMONSTRATION. IN PRODUCTION, THE FILE `.env` MUST
-  NOT BE TRACKED!
+THIS OVERRIDE IS JUST FOR DEMONSTRATION. IN PRODUCTION, THE FILE $(.env) MUST
+NOT BE TRACKED!
 ###
 
 # /.env
@@ -40,3 +40,4 @@
 /config/master.key
 
 .byebug_history
+.idea/
