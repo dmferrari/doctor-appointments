@@ -107,7 +107,8 @@ curl -i --request POST \
 }'
 ```
 
-In the header of the response you will receive the **token** that you will use to authenticate the other requests.
+> [!NOTE] JWT Token
+> In the header of the response you will receive the **token** that you will use to authenticate the other requests.
 
 Response:
 
