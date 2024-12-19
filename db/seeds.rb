@@ -6,6 +6,8 @@ include Constants
 # This will allow you to login as any user just knowing their email and this
 # password
 
+puts 'Seeding the database...'
+
 def create_user(email:, roles:)
   created_user = User.find_or_create_by!(email:) do |user|
     user.full_name = Faker::Name.name
