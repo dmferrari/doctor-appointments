@@ -12,7 +12,7 @@ the database.
 - The responses use JSON format produced by the Active Model Serializers gem.
 - The strings are translated using the i18n gem to keep the consistency of the messages.
 
-The main goal of the Clinic Challenge project is to create a robust, secure, and scalable API service for managing doctor appointments. Here is a summary of the key considerations and decisions made during the development process:
+The main goal of the Doctor Appointments project is to create a robust, secure, and scalable API service for managing doctor appointments. Here is a summary of the key considerations and decisions made during the development process:
 
 ### API Structure
 
