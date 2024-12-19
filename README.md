@@ -1,6 +1,6 @@
-# Clinic Challenge
+# Doctor Appointments
 
-ClinicChallenge is a Rails-based API service for managing doctor appointments. This service allows users to create, update, and delete appointments, and provides information about doctors' availability and working hours.
+Doctor Appointments is a Rails-based API service for managing doctor appointments. This service allows users to create, update, and delete appointments, and provides information about doctors' availability and working hours.
 
 ## Prerequisites
 
@@ -12,8 +12,8 @@ ClinicChallenge is a Rails-based API service for managing doctor appointments. T
 ### Clone the repository
 
    ```sh
-   git clone git@github.com:dmferrari/clinic-challenge.git
-   cd clinic-challenge
+   git clone git@github.com:dmferrari/doctor-appointments.git
+   cd doctor-appointments
    ```
 
 ### Create environment variables file
@@ -23,7 +23,7 @@ Create a .env file in the root directory with the following content:
 ```env
 POSTGRES_USER=your_postgres_user
 POSTGRES_PASSWORD=your_postgres_password
-POSTGRES_DB=clinic_challenge_development
+POSTGRES_DB=doctor_appointments_development
 REDIS_URL=redis://redis:6379/1
 JWT_SECRET_KEY=your_jwt_secret_key
 ```
