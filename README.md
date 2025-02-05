@@ -101,7 +101,7 @@ curl -i --request POST \
   --header 'Content-Type: application/json' \
   --data '{
   "user": {
-    "email": "dmferrari@gmail.com",
+    "email": "user@example.com",
     "password": "password"
   }
 }'
@@ -110,7 +110,10 @@ curl -i --request POST \
 > [!NOTE] JWT Token
 > In the header of the response you will receive the **token** that you will use to authenticate the other requests.
 
-Response:
+> [!NOTE] User and password
+> The user and password for the default user are defined in the .env file.
+
+Response (example):
 
 ```text
 HTTP/1.1 200 OK
