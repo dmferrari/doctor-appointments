@@ -58,4 +58,4 @@ end
 end
 
 # Create a default user
-create_user(email: 'dmferrari@gmail.com', roles: %w[doctor patient])
+create_user(email: 'user@example.com', roles: %w[doctor patient])
