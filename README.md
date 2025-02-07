@@ -134,7 +134,7 @@ x-miniprofiler-ids: bcr60cgpyowrpxfuaf1x,dj8ga1yuj4o2yhdrqt9n,q9h7vakssnpplzk73b
 set-cookie: __profilin=p%3Dt; path=/; httponly; SameSite=Lax
 Content-Length: 206
 
-{"message":"logged in successfully","user":{"id":112,"full_name":"Willis Little","email":"dmferrari@gmail.com","created_at":"2024-05-20T10:03:50.432Z","updated_at":"2024-05-20T10:03:50.432Z","locale":"en"}}%
+{"message":"logged in successfully","user":{"id":112,"full_name":"Willis Little","email":"user@example.com","created_at":"2024-05-20T10:03:50.432Z","updated_at":"2024-05-20T10:03:50.432Z","locale":"en"}}%
 ```
 
 Logout:
@@ -179,7 +179,7 @@ Response:
   "patient": {
    "id": 112,
    "full_name": "Willis Little",
-   "email": "dmferrari@gmail.com"
+   "email": "user@example.com"
   }
  },
  {
@@ -197,7 +197,7 @@ Response:
   "patient": {
    "id": 112,
    "full_name": "Willis Little",
-   "email": "dmferrari@gmail.com"
+   "email": "user@example.com"
   }
  },
  {
@@ -215,7 +215,7 @@ Response:
   "patient": {
    "id": 112,
    "full_name": "Willis Little",
-   "email": "dmferrari@gmail.com"
+   "email": "user@example.com"
   }
  }
 ]
@@ -254,7 +254,7 @@ Response:
  "patient": {
   "id": 112,
   "full_name": "Willis Little",
-  "email": "dmferrari@gmail.com"
+  "email": "user@example.com"
  }
 }
 ```
@@ -299,7 +299,7 @@ Response:
  "patient": {
   "id": 112,
   "full_name": "Willis Little",
-  "email": "dmferrari@gmail.com"
+  "email": "user@example.com"
  }
 }
 ```
@@ -343,7 +343,7 @@ Response:
  "patient": {
   "id": 112,
   "full_name": "Willis Little",
-  "email": "dmferrari@gmail.com"
+  "email": "user@example.com"
  }
 }
 ```
