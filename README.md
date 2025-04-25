@@ -107,11 +107,11 @@ curl -i --request POST \
 }'
 ```
 
-> [!NOTE] JWT Token
-> In the header of the response you will receive the **token** that you will use to authenticate the other requests.
+> [!NOTE]
+> JWT Token: In the header of the response you will receive the **token** that you will use to authenticate the other requests.
 
-> [!NOTE] User and password
-> The user and password for the default user are defined in the .env file.
+> [!NOTE]
+> User and password: The user and password for the default user are defined in the .env file.
 
 Response (example):
 
